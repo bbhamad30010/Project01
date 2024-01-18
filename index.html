@@ -1,0 +1,1026 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export html form data to excel using javascript</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script type="text/javascript">
+        function exportToExcel(tableID, filename = '') {
+            var downloadurl;
+            var dataFileType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTMLData = tableSelect.outerHTML.replace(/ /g, '%20');
+            filename = filename ? filename + '.xls' : 'export_excel_data.xls';
+            downloadurl = document.createElement("a");
+            document.body.appendChild(downloadurl);
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTMLData], {
+                    type: dataFileType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                downloadurl.href = 'data:' + dataFileType + ', ' + tableHTMLData;
+                downloadurl.download = filename;
+                downloadurl.click();
+            }
+        }
+
+        function addRow() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var age = document.getElementById('age').value;
+            var mobile = document.getElementById('mobile').value;
+
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+
+            cell1.innerHTML = name;
+            cell2.innerHTML = email;
+            cell3.innerHTML = age;
+            cell4.innerHTML = mobile;
+
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('mobile').value = '';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="mobile">Mobile:</label>
+            <input type="tel" id="mobile" name="mobile" required>
+
+            <button type="button" onclick="addRow()" class="btn btn-primary">Add to Table</button>
+        </form>
+
+        <table id="tblexportData" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Mobile</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Harry</td>
+                    <td>harry@gmail.com</td>
+                    <td>01</td>
+                     <td>9999999999</td>
+                </tr>
+                <tr>
+                    <td>Mike</td>
+                    <td>mike@gmail.com</td>
+                     <td>0</td>
+                     <td>9999999999</td>
+                </tr>
+                <tr>
+                    <td>Romeo</td>
+                    <td>romeo@gmail.com</td>
+                     <td>03</td>
+                     <td>9999999999</td>
+                </tr>
+            <tr>
+                    <td>Tommy</td>
+                    <td>tommy@gmail.com</td>
+                     <td>04</td>
+                     <td>9999999999</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button onclick="exportToExcel('tblexportData', 'user-data')" class="btn btn-success">Export Table Data To Excel File</button>
+    </div>
+</body>
+</html> -->
+
+
+
+
+
+<!-- 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Read Excel File in HTML</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script type="text/javascript">
+        function exportToExcel(tableID, filename = '') {
+            var downloadurl;
+            var dataFileType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTMLData = tableSelect.outerHTML.replace(/ /g, '%20');
+            filename = filename ? filename + '.xls' : 'export_excel_data.xls';
+            downloadurl = document.createElement("a");
+            document.body.appendChild(downloadurl);
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTMLData], {
+                    type: dataFileType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                downloadurl.href = 'data:' + dataFileType + ', ' + tableHTMLData;
+                downloadurl.download = filename;
+                downloadurl.click();
+            }
+        }
+
+        function addRow() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var age = document.getElementById('age').value;
+            var mobile = document.getElementById('mobile').value;
+
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+
+            cell1.innerHTML = name;
+            cell2.innerHTML = email;
+            cell3.innerHTML = age;
+            cell4.innerHTML = mobile;
+
+            // Clear the form fields after adding a new row
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('mobile').value = '';
+        }
+
+        function handleFileUpload() {
+            var input = document.getElementById('fileInput');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                // Assuming the first sheet is the relevant one
+                var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                var sheetData = XLSX.utils.sheet_to_json(sheet);
+
+                // Clear existing table data
+                var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+
+                // fill the table with the data from the Excel file
+                sheetData.forEach(function (row) {
+                    var newRow = table.insertRow(table.rows.length);
+
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+
+                    cell1.innerHTML = row.Name;
+                    cell2.innerHTML = row.Email;
+                    cell3.innerHTML = row.Age;
+                    cell4.innerHTML = row.Mobile;
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="mobile">Mobile:</label>
+            <input type="tel" id="mobile" name="mobile" required>
+
+            <button type="button" onclick="addRow()" class="btn btn-primary">Add to Table</button>
+
+            <label for="fileInput">Upload Excel File:</label>
+            <input type="file" id="fileInput" accept=".xls, .xlsx" onchange="handleFileUpload()">
+        </form>
+
+        <table id="tblexportData" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Mobile</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Harry</td>
+                    <td>harry@gmail.com</td>
+                    <td>01</td>
+                     <td>9999999999</td>
+                </tr>
+                <tr>
+                    <td>Mike</td>
+                    <td>mike@gmail.com</td>
+                     <td>0</td>
+                     <td>9999999999</td>
+                </tr>
+                <tr>
+                    <td>Romeo</td>
+                    <td>romeo@gmail.com</td>
+                     <td>03</td>
+                     <td>9999999999</td>
+                </tr>
+            <tr>
+                    <td>Tommy</td>
+                    <td>tommy@gmail.com</td>
+                     <td>04</td>
+                     <td>9999999999</td>
+                </tr>            </tbody>
+        </table>
+
+        <button onclick="exportToExcel('tblexportData', 'user-data')" class="btn btn-success">Export Table Data To Excel File</button>
+    </div>
+</body>
+</html>
+ -->
+
+
+<!-- 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Read Excel File in HTML</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            background-color: #e2fdd5;
+            padding-top: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin-top: 32px;
+        }
+
+        .Custom {
+                background-color: yellowgreen;
+        }
+    </style>
+    <script type="text/javascript">
+        function exportToExcel(tableID, filename = '') {
+            var downloadurl;
+            var dataFileType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTMLData = tableSelect.outerHTML.replace(/ /g, '%20');
+            filename = filename ? filename + '.xls' : 'export_excel_data.xls';
+            downloadurl = document.createElement("a");
+            document.body.appendChild(downloadurl);
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTMLData], {
+                    type: dataFileType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                downloadurl.href = 'data:' + dataFileType + ', ' + tableHTMLData;
+                downloadurl.download = filename;
+                downloadurl.click();
+            }
+        }
+
+        function addRow() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var age = document.getElementById('age').value;
+            var mobile = document.getElementById('mobile').value;
+
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+
+            cell1.innerHTML = name;
+            cell2.innerHTML = email;
+            cell3.innerHTML = age;
+            cell4.innerHTML = mobile;
+
+            // Clear the form fields after adding a new row
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('mobile').value = '';
+        }
+
+        function handleFileUpload() {
+            var input = document.getElementById('fileInput');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                // Assuming the first sheet is the relevant one
+                var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                var sheetData = XLSX.utils.sheet_to_json(sheet);
+
+                // Clear existing table data
+                var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+
+                // Populate the table with the data from the Excel file
+                sheetData.forEach(function (row) {
+                    var newRow = table.insertRow(table.rows.length);
+
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+
+                    cell1.innerHTML = row.Name;
+                    cell2.innerHTML = row.Email;
+                    cell3.innerHTML = row.Age;
+                    cell4.innerHTML = row.Mobile;
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function filterByAge() {
+            var filterAge = document.getElementById('filterAge').value;
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var rows = table.getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var cell = rows[i].getElementsByTagName('td')[2];
+                if (cell) {
+                    var age = parseInt(cell.innerHTML, 10);
+                    if (age != filterAge) {
+                        rows[i].style.display = 'none';
+                    } else {
+                        rows[i].style.display = '';
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div class="form-row">
+                <div class="col-md-3 mb-3">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="age">Age:</label>
+                    <input type="number" class="form-control" id="age" name="age" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="mobile">Mobile:</label>
+                    <input type="tel" class="form-control" id="mobile" name="mobile" required>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <button type="button" class="btn btn-primary btn-block" onclick="addRow()">Add</button>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-2 mb-3">
+                    <label for="filterAge">Filter by Age:</label>
+                    <input type="number" class="form-control" id="filterAge" name="filterAge" placeholder="Enter Age">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button type="button" class="btn btn-info btn-block" onclick="filterByAge()">Filter</button>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <button onclick="exportToExcel('tblexportData', 'user-data')" class="btn btn-success btn-block">Export Table Data To Excel File</button>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label class="btn btn-info btn-block">
+                        Upload Excel File<input type="file" class="form-control-file" id="fileInput" accept=".xls, .xlsx" onchange="handleFileUpload()" style="display: none;">
+                    </label>
+                </div>
+            </div>
+        </form>
+
+        <table id="tblexportData" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Mobile</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+
+</html> -->
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Read Excel File in HTML</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            margin-top: 32px;
+        }
+
+        .Custom {
+                background-color: yellowgreen;
+        }
+    </style>
+    <script type="text/javascript">
+        function exportToExcel(tableID, filename = '') {
+            var downloadurl;
+            var dataFileType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTMLData = tableSelect.outerHTML.replace(/ /g, '%20');
+            filename = filename ? filename + '.xls' : 'export_excel_data.xls';
+            downloadurl = document.createElement("a");
+            document.body.appendChild(downloadurl);
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTMLData], {
+                    type: dataFileType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                downloadurl.href = 'data:' + dataFileType + ', ' + tableHTMLData;
+                downloadurl.download = filename;
+                downloadurl.click();
+            }
+        }
+
+        function addRow() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var age = document.getElementById('age').value;
+            var mobile = document.getElementById('mobile').value;
+            var date = document.getElementById('date').value;
+
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+            var cell5 = newRow.insertCell(4);
+
+            cell1.innerHTML = name;
+            cell2.innerHTML = email;
+            cell3.innerHTML = age;
+            cell4.innerHTML = mobile;
+            cell5.innerHTML = date;
+
+            // Clear the form fields after adding a new row
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('mobile').value = '';
+            document.getElementById('date').value = '';
+        }
+
+        function handleFileUpload() {
+            var input = document.getElementById('fileInput');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                // Assuming the first sheet is the relevant one
+                var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                var sheetData = XLSX.utils.sheet_to_json(sheet);
+
+                // Clear existing table data
+                var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+
+               // Populate the table with the data from the Excel file
+                sheetData.forEach(function (row) {
+                    var newRow = table.insertRow(table.rows.length);
+
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+                    var cell5 = newRow.insertCell(4);
+
+                    cell1.innerHTML = row.Name;
+                    cell2.innerHTML = row.Email;
+                    cell3.innerHTML = row.Age;
+                    cell4.innerHTML = row.Mobile;
+
+                    // Check if the 'Date' property exists in the row
+                    if (row.Date) {
+                        // Convert the Excel numeric date to a JavaScript Date object
+                        var excelDate = parseFloat(row.Date);
+                        var date = new Date((excelDate - (25567 + 1)) * 86400 * 1000);
+
+                        // Display the date in a readable format
+                        cell5.innerHTML = date.toLocaleDateString();
+                    } else {
+                        cell5.innerHTML = ''; // Handle the case where the 'Date' property is missing
+                    }
+                });
+
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function filterByAge() {
+            var filterAge = document.getElementById('filterAge').value;
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var rows = table.getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var cell = rows[i].getElementsByTagName('td')[2];
+                if (cell) {
+                    var age = parseInt(cell.innerHTML, 10);
+                    if (age != filterAge) {
+                        rows[i].style.display = 'none';
+                    } else {
+                        rows[i].style.display = '';
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="age">Age:</label>
+                    <input type="number" class="form-control" id="age" name="age" required>
+                </div>
+            </div>
+
+                <div class="form-row">
+
+                <div class="col-md-4 mb-3">
+                    <label for="mobile">Mobile:</label>
+                    <input type="tel" class="form-control" id="mobile" name="mobile" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="date">Date:</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <button type="button" class="btn btn-primary btn-block" onclick="addRow()">Add</button>
+                </div>
+            </div>
+        </form>
+<br/>
+            <div class="form-row">
+                
+                <div class="col-md-2 mb-3">
+                    <label for="filterAge">Filter by Age:</label>
+                    <input type="number" class="form-control" id="filterAge" name="filterAge" placeholder="Enter Age">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button type="button" class="btn btn-info btn-block" onclick="filterByAge()">Filter</button>
+                </div>
+            </div>
+
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <button onclick="exportToExcel('tblexportData', 'user-data')" class="btn btn-success btn-block">Export Table Data To Excel File</button>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label class="btn btn-info btn-block">
+                    Upload Excel File<input type="file" class="form-control-file" id="fileInput" accept=".xls, .xlsx" onchange="handleFileUpload()" style="display: none;">
+                </label>
+            </div>
+        </div>
+
+        <table id="tblexportData" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Mobile</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List Display</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .Divider {
+        margin-top: 20px; /* Adjust the margin as needed */
+        margin-bottom: 20px; /* Adjust the margin as needed */
+        border-top: 2px solid #ddd; /* Customize the border color and style */
+    }
+
+        table {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin-top: 32px;
+        }
+
+        .Custom {
+            background-color: yellowgreen;
+        }
+    </style>
+
+    <script type="text/javascript">
+       
+
+       function exportToExcel(tableID, filename = '') {
+    var tableSelect = document.getElementById(tableID);
+
+    // Create a worksheet
+    var ws = XLSX.utils.table_to_sheet(tableSelect);
+
+    // Create a workbook with a single worksheet
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
+
+    // Convert the workbook to a data URL
+    var wbData = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+
+    // Create a data URL for the workbook
+    var dataURL = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + wbData;
+
+    // Trigger a download
+    var link = document.createElement('a');
+    link.href = dataURL;
+    link.download = filename || 'export_excel_data.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+
+        function addRow() {
+            var taskName = document.getElementById('taskName').value;
+            var description = document.getElementById('description').value;
+            var dueDate = document.getElementById('dueDate').value;
+            var status = document.getElementById('status').value;
+            var completion = document.getElementById('completion').value;
+
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+            var cell5 = newRow.insertCell(4);
+
+            cell1.innerHTML = taskName;
+            cell2.innerHTML = description;
+            cell3.innerHTML = dueDate;
+            cell4.innerHTML = status;
+            cell5.innerHTML = completion;
+
+            // Clear the form fields after adding a new row
+            document.getElementById('taskName').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('dueDate').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('completion').value = '';
+        }
+
+        function handleFileUpload() {
+            var input = document.getElementById('fileInput');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                var sheetData = XLSX.utils.sheet_to_json(sheet);
+
+                var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+
+                // Populate the table with the data from the Excel file
+                sheetData.forEach(function (row) {
+                    var newRow = table.insertRow(table.rows.length);
+
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3); 
+                    var cell5 = newRow.insertCell(4);
+
+                    cell1.innerHTML = row['Task Name'] || '';
+                    cell2.innerHTML = row.Description || '';
+
+
+                    // Check if the 'Due Date' property exists in the row
+                    if (row['Due Date']) {
+                        // Convert the Excel numeric date to a JavaScript Date object
+                        var excelDueDate = parseFloat(row['Due Date']);
+                        var dueDate = new Date((excelDueDate - (25567 + 1)) * 86400 * 1000);
+
+                        cell3.innerHTML = dueDate.toLocaleDateString();
+                    } else {
+                        cell3.innerHTML = ''; 
+                    }
+
+                    cell4.innerHTML = row.Status || '';
+
+                    if (row['Percentage Completion'] !== undefined) {
+                        cell5.innerHTML = row['Percentage Completion'];
+                    } else {
+                        cell5.innerHTML = '';
+                    }
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function filterData() {
+            filterByStatus();
+           filterByDueDate();
+        }
+
+
+/////
+
+
+
+function filterByStatus() {
+    var filterStatus = document.getElementById('filterStatus').value.toLowerCase();
+    var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+    var rows = table.getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var statusCell = rows[i].getElementsByTagName('td')[3]; 
+
+        var status = statusCell ? statusCell.textContent.trim().toLowerCase() : '';
+
+        rows[i].style.display = (filterStatus === '' || status === filterStatus) ? '' : 'none';
+    }
+}
+
+
+function filterByDueDate() {
+    debugger;
+
+            var filterDueDate = document.getElementById('filterDueDate').value;
+            var table = document.getElementById('tblexportData').getElementsByTagName('tbody')[0];
+            var rows = table.getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var dueDateCell = rows[i].getElementsByTagName('td')[2]; 
+
+                
+                var dueDate = dueDateCell ? dueDateCell.textContent.trim() : '';
+
+                const date = new Date(filterDueDate)
+                const dudate = new Date(dueDate)
+
+
+                rows[i].style.display = (filterDueDate === '' || dudate === date) ? '' : 'none';
+            }
+        }
+
+
+
+       
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="taskName">Task Name:</label>
+                    <input type="text" class="form-control" id="taskName" name="taskName" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="description">Description:</label>
+                    <input type="text" class="form-control" id="description" name="description" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="dueDate">Due Date:</label>
+                    <input type="date" class="form-control" id="dueDate" name="dueDate" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="status">Status:</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="Not Started">Not Started</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="completion">Completion (%):</label>
+                    <input type="number" class="form-control" id="completion" name="completion" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <button type="button" class="btn btn-primary btn-block" onclick="addRow()">Add</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="form-row Divider">
+            <div class="col-md-2 mb-3">
+                <br>
+                <label for="filterStatus">Filter by Status:</label>
+                <select class="form-control" id="filterStatus" name="filterStatus">
+                    <option value="">All</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <br>
+                <label for="filterDueDate">Filter by Due Date:</label>
+                <input type="date" class="form-control" id="filterDueDate" name="filterDueDate">
+            </div>
+            <div class="col-md-2 mb-3">
+                <br>
+
+                <button type="button" class="btn btn-info btn-block" onclick="filterData()">Filter</button>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <button onclick="exportToExcel('tblexportData', 'task-data')" class="btn btn-success btn-block">Export Table Data To Excel File</button>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label class="btn btn-info btn-block">
+                    Upload Excel File<input type="file" class="form-control-file" id="fileInput" accept=".xls, .xlsx" onchange="handleFileUpload()" style="display: none;">
+                </label>
+            </div>
+        </div>
+
+        <table id="tblexportData" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Percentage Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
